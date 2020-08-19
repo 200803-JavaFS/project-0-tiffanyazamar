@@ -8,7 +8,7 @@ public interface IUserInformationDAO {
 	
 	public UserInformation logginIn (String username, String password);
 	
-	public boolean insertNewUser(UserInformation user);
+	public int insertNewUser(UserInformation user);
 	
-	public boolean updateUserRole(UserInformation user);
+	public boolean updateUserRole(String username, String userRole);
 }

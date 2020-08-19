@@ -1,5 +1,7 @@
 package com.revature.app.models;
 
+import java.util.List;
+
 public class UserInformation {
 	private int id;
 	private String username;
@@ -7,16 +9,26 @@ public class UserInformation {
 	private String firstname;
 	private String lastname;
 	private String userRole;
+	private List<BankAccount> bankAccounts;
 
 	public UserInformation() {
 		super();
+	}
+
+	public UserInformation(String username, String password, String firstname, String lastname, String userRole) {
+		super();
+		this.username = username.toLowerCase();
+		this.userPassword = password;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.userRole = userRole;
 	}
 
 	public UserInformation(int id, String username, String firstname, String lastname,
 			String userRole) {
 		super();
 		this.id = id;
-		this.username = username;
+		this.username = username.toLowerCase();
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.userRole = userRole;
@@ -68,6 +80,14 @@ public class UserInformation {
 
 	public void setUserRole(String userRole) {
 		this.userRole = userRole;
+	}
+
+	public List<BankAccount> getBankAccounts() {
+		return bankAccounts;
+	}
+
+	public void setBankAccounts(List<BankAccount> bankAccounts) {
+		this.bankAccounts = bankAccounts;
 	}
 
 }

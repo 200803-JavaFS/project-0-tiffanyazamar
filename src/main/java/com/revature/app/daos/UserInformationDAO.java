@@ -82,11 +82,11 @@ public class UserInformationDAO implements IUserInformationDAO {
 	}
 
 	@Override
-	public boolean insertNewUser(UserInformation user) {
+	public int insertNewUser(UserInformation user) {
 		try (Connection connection = ConnectionUtility.getConnection()) {
 			// querying to get the user with the matching username and password
 			// ? is the placeholder.
-			String sql = "INSERT INTO user_information (username, user_password, firstname, lastname, user_role) VALUES (?, ?, ?, ?, ?)";
+			String sql = "INSERT INTO user_information (username, user_password, firstname, lastname, user_role) VALUES (?, ?, ?, ?, ?) RETURNING id";
 
 			// create a preparedStatement
 			PreparedStatement statement = connection.prepareStatement(sql);
@@ -98,29 +98,36 @@ public class UserInformationDAO implements IUserInformationDAO {
 			statement.setString(4, user.getLastname());
 			statement.setString(5, user.getUserRole());
 			// Executing the query
-			return statement.execute();
+			ResultSet resultSet = statement.executeQuery();
+			while(resultSet.next()) {
+				
+				return resultSet.getInt("id");
+			}
+
 		} catch (SQLException e) {
-			logger.error("Failed to create new user [{}]", user.getUsername());
-			return false;
+			logger.error("Failed to create new user [{}]", user.getUsername(), e.getMessage());
+			return 0;
 		}
+		return 0;
 	}
 
 	@Override
-	public boolean updateUserRole(UserInformation user) {
+	public boolean updateUserRole(String username, String userRole) {
 		try (Connection connection = ConnectionUtility.getConnection()) {
 			// querying to get the user with the matching username and password
 			// ? is the placeholder.
-			String sql = "UPDATE user_information as ui SET ui.user_role = ?";
+			String sql = "UPDATE user_information as ui SET ui.user_role = ? WHERE ui.username = ?";
 
 			// create a preparedStatement
 			PreparedStatement statement = connection.prepareStatement(sql);
 
 			// Set user_role into the query above
-			statement.setString(1, user.getUserRole());
+			statement.setString(1, userRole);
+			statement.setString(2, username);
 			// Executing the query
 			return statement.execute();
 		} catch (SQLException e) {
-			logger.error("Failed to update role for user [{}]", user.getUsername());
+			logger.error("Failed to update role for user [{}]", username);
 			return false;
 		}
 	}
